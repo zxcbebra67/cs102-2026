@@ -96,7 +96,10 @@ def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[in
     >>> find_empty_positions([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']])
     (2, 0)
     """
-    pass
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            if grid[i][j] == '.':
+                return (i, j)
 
 
 def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.Set[str]:
@@ -109,7 +112,15 @@ def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -
     >>> values == {'2', '5', '9'}
     True
     """
-    pass
+    col = set(get_col(grid, pos))
+    row = set(get_row(grid, pos))
+    block = set(get_block(grid, pos))
+    values = set()
+    for i in range(1, 10):
+        val = str(i)
+        if not(val in col or val in row or val in block):
+            values.add(val)
+    return values
 
 
 def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
@@ -124,13 +135,30 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
     >>> solve(grid)
     [['5', '3', '4', '6', '7', '8', '9', '1', '2'], ['6', '7', '2', '1', '9', '5', '3', '4', '8'], ['1', '9', '8', '3', '4', '2', '5', '6', '7'], ['8', '5', '9', '7', '6', '1', '4', '2', '3'], ['4', '2', '6', '8', '5', '3', '7', '9', '1'], ['7', '1', '3', '9', '2', '4', '8', '5', '6'], ['9', '6', '1', '5', '3', '7', '2', '8', '4'], ['2', '8', '7', '4', '1', '9', '6', '3', '5'], ['3', '4', '5', '2', '8', '6', '1', '7', '9']]
     """
-    pass
+    pos = find_empty_positions(grid)
+    if pos is None:
+        return grid
+    row, col = pos
+    for value in find_possible_values(grid, pos):
+        grid[row][col] = value
+        solution = solve(grid)
+        if solution is not None:
+            return solution
+    grid[row][col] = '.'
+    return None
 
 
 def check_solution(solution: tp.List[tp.List[str]]) -> bool:
     """ Если решение solution верно, то вернуть True, в противном случае False """
+    for i in range(len(solution)):
+        if not(len(get_col(solution, (i, 0))) == len(set(get_col(solution, (0, i))))): return False
+    for i in range(len(solution)):
+        if not(len(get_row(solution, (0, i))) == len(set(get_row(solution, (i, 0))))): return False
+    for i in range(0, len(solution), 3):
+        for j in range(0, len(solution[i]), 3):
+            if not(len(get_block(solution, (i, j))) == len(set(get_block(solution, (i, j))))): return False
+    return True
     # TODO: Add doctests with bad puzzles
-    pass
 
 
 def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
