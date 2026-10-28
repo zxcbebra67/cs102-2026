@@ -99,7 +99,7 @@ def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[in
     """
     for i in range(len(grid)):
         for j in range(len(grid[i])):
-            if grid[i][j] == '.':
+            if grid[i][j] == ".":
                 return (i, j)
 
 
@@ -145,7 +145,7 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
         solution = solve(grid)
         if solution is not None:
             return solution
-    grid[row][col] = '.'
+    grid[row][col] = "."
     return None
 
 
@@ -183,15 +183,15 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
     >>> check_solution(solution)
     True
     """
-    grid = [['.'] * 9 for i in range(9)]
-    first_row = list('123456789')
+    grid = [["."] * 9 for i in range(9)]
+    first_row = list("123456789")
     random.shuffle(first_row)
     grid[0] = first_row
     solved = solve(grid)
     N = max(0, min(N, 81))
     cells = [(r, c) for r in range(9) for c in range(9)]
     for r, c in random.sample(cells, 81 - N):
-        solved[r][c] = '.'
+        solved[r][c] = "."
     return solved
 
 
