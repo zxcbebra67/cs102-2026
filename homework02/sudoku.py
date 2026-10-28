@@ -98,6 +98,7 @@ def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[in
         for j in range(len(grid[i])):
             if grid[i][j] == ".":
                 return (i, j)
+    return None
 
 
 def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.Set[str]:
@@ -188,6 +189,8 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
     random.shuffle(first_row)
     grid[0] = first_row
     solved = solve(grid)
+    if solved is None:
+        raise ValueError("Could not generate sudoku")
     N = max(0, min(N, 81))
     cells = [(r, c) for r in range(9) for c in range(9)]
     for r, c in random.sample(cells, 81 - N):
